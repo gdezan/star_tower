@@ -1,2 +1,3 @@
-# star_tower
+# Star Tower
+
 Tower defense game
