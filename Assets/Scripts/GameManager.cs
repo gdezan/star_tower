@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,7 +28,11 @@ public class GameManager : MonoBehaviour {
             Destroy(gameObject);
 
         //DontDestroyOnLoad(gameObject);
+        playerHealth.runtimeValue = playerHealth.initialValue;
+        homeBaseHealth.runtimeValue = homeBaseHealth.initialValue;
+
     }
+
 
     private void Update() {
         if (currentTimeScale == 1 && Time.timeScale == 0) {
