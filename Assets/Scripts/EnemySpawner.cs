@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,6 +24,7 @@ public class EnemySpawner : MonoBehaviour {
     void Start() {
         transform.position = LevelManager.instance.spawnPointLocation;
         countdownSignal.Raise();
+        EnemiesAlive = 0;
     }
 
     // Update is called once per frame
