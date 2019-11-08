@@ -3,7 +3,14 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Enemy
+  - Pickup
+  - Path
+  - Wall
+  - Tower
+  - Base
+  - Cog
   layers:
   - Default
   - TransparentFX
@@ -13,12 +20,12 @@ TagManager:
   - UI
   - 
   - 
+  - Enemy
+  - Turret
+  - Wall
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Player
   - 
   - 
   - 
@@ -38,12 +45,24 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: BG
-    uniqueID: 1832358089
-    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Gun
-    uniqueID: 996286777
+  - name: Tile
+    uniqueID: 2484456209
+    locked: 0
+  - name: "P\xECckup"
+    uniqueID: 3727623319
+    locked: 0
+  - name: Enemies
+    uniqueID: 2772598809
+    locked: 0
+  - name: Shooters
+    uniqueID: 363317443
+    locked: 0
+  - name: UI
+    uniqueID: 3609217939
+    locked: 0
+  - name: Cursor
+    uniqueID: 4243420047
     locked: 0

@@ -1,69 +1,124 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Shooting : MonoBehaviour {
-    [SerializeField]
-    GameObject bulletPrefab;
-    [SerializeField]
-    GameObject flarePrefab;
-    [SerializeField]
-    float fireRate = 1f;
-    public int flareAmount = 4;
+    public Transform shotPoint;
+    public GunProps gunProps;
+    public TurretProps turretProps;
+    public int bulletCounter;
+    public bool shootingEnabled = true;
 
-    public float bulletSpeed = 150.0f;
-
-    private int bulletAmount;
+    private bool isTurret = false;
+    private GunSelect gunSelect;
     private float nextShotTime = 0f;
-    private int nextBullet = 0;
     private float initialPitch;
-    private List<GameObject> bullets = new List<GameObject>();
-    private List<GameObject> flares = new List<GameObject>();
+    private GameObject bulletPrefab;
+    private GameObject flarePrefab;
+    LineRenderer laserRenderer;
+    private float laserBullets;
 
     void Awake() {
-        bulletAmount = (int) Mathf.Ceil(fireRate * 2.5f);
-        initialPitch = transform.GetComponent<AudioSource>().pitch;        
-    }
+        if (transform.GetComponent<AudioSource>() != null)
+            initialPitch = transform.GetComponent<AudioSource>().pitch;
 
-    void Start() {
-        for (int i = 0; i < bulletAmount; i++) {
-            AddToPool(bulletPrefab, bullets);
-            if (i < flareAmount) AddToPool(flarePrefab, flares);
+        if (gunProps != null && turretProps == null) {
+            if (gunProps.useLaser) {
+                laserRenderer = gameObject.GetComponent<LineRenderer>();
+                laserRenderer.enabled = false;
+            }
+            isTurret = false;
+            bulletPrefab = gunProps.bullet;
+            flarePrefab = gunProps.flare;
+            if (!gunProps.infiniteAmmo) {
+                gunSelect = transform.parent.gameObject.GetComponent<GunSelect>();
+                bulletCounter = gunProps.bulletPickupQuantity;
+                gunSelect.UpdateBullets();
+
+                if (gunProps.useLaser) {
+                    laserBullets = bulletCounter;
+                }
+            }
+        } else if (gunProps == null && turretProps != null) {
+            isTurret = true;
+            bulletPrefab = turretProps.bullet;
+            flarePrefab = turretProps.flare;
+        } else {
+            Debug.LogError("Shooting script missing a GunProps or TurretProps");
         }
     }
+
 
     // Update is called once per frame
     void Update() {
         bool isShooting = Input.GetButton("Fire1");
 
-        if (isShooting && Time.time >= nextShotTime) {
-            Shoot();
-            nextShotTime = Time.time + 1f / fireRate;
+        if (!isTurret && isShooting && Time.time >= nextShotTime && shootingEnabled) {
+            if (gunProps.useLaser) {
+                Laser();
+            } else {
+                Shoot();
+                nextShotTime = Time.time + 1f / gunProps.fireRate;
+            }
+        } else if (!isTurret && gunProps.useLaser && laserRenderer.enabled) {
+            laserRenderer.enabled = false;
+            GetComponent<AudioSource>().Stop();
+            //particles.Stop();
         }
     }
 
-    void AddToPool(GameObject prefab, List<GameObject> list) {
-        GameObject obj = (GameObject)Instantiate(prefab, transform.position, Quaternion.identity);
-        obj.transform.parent = gameObject.transform;
-        obj.SetActive(false);
-        list.Add(obj);
+    private void OnEnable() {
+        if (!isTurret && bulletCounter <= 0 && !gunProps.infiniteAmmo) {
+            bulletCounter = gunProps.bulletPickupQuantity;
+            gunSelect.UpdateBullets();
+
+            if (gunProps.useLaser) {
+                laserBullets = bulletCounter;
+            }
+        }
     }
 
-    void Shoot() {
-        Vector2 shootingDirection = transform.parent.gameObject.transform.rotation * Vector2.right;
-        //GameObject flare = Instantiate(flarePrefab, transform.position, Quaternion.identity);
-
-        //flare.transform.Rotate(0, 0, Mathf.Atan2(shootingDirection.y, shootingDirection.x) * Mathf.Rad2Deg - 90);
-        //flare.transform.Translate(0.03f, 1.1f, 0);
+    public void Shoot() {
+        GameObject bullet = Instantiate(bulletPrefab, shotPoint.position, shotPoint.rotation);
 
         AudioSource gunSound = transform.GetComponent<AudioSource>();
-        gunSound.pitch = initialPitch * (1 + Random.Range(-0.2f, 0.2f));
-        gunSound.Play();
+        if (gunSound != null) {
+            if (!isTurret) gunSound.pitch = initialPitch * (1 + Random.Range(-0.2f, 0.2f));
+            gunSound.Play();
+        }
 
-        //Destroy(flare, 0.5f);
+        if (!isTurret && !gunProps.infiniteAmmo) {
+            bulletCounter--;
+            gunSelect.UpdateBullets();
+        }
 
-        bullets[nextBullet % bulletAmount].SetActive(true);
-        flares[nextBullet % flareAmount].SetActive(true);
-        nextBullet++;
+        Effect();
+        Destroy(bullet, 0.5f);
+    }
+
+    private void Laser() {
+        RaycastHit2D hit = Physics2D.Raycast(shotPoint.position, transform.up, Mathf.Infinity, gunProps.whatIsSolid);
+        if (!laserRenderer.enabled) {
+            laserRenderer.enabled = true;
+            GetComponent<AudioSource>().Play();
+            //particles.Play();
+        }
+        if (Time.timeScale != 0) {
+            laserBullets -= gunProps.ammoDecayRate * (Time.deltaTime);
+            bulletCounter = (int) laserBullets;
+            gunSelect.UpdateBullets();
+            if (hit.collider != null) {
+                if (hit.collider.CompareTag("Enemy")) {
+                    hit.collider.gameObject.GetComponent<EnemyBehavior>().TakeDamage(gunProps.damage * Time.deltaTime);
+                }
+            }
+        }
+        laserRenderer.SetPosition(0, shotPoint.position);
+        laserRenderer.SetPosition(1, hit.point);
+    }
+
+    void Effect() {
+        //GameObject flare = Instantiate(flarePrefab, shotPoint.position, transform.rotation);
+        //float size = Random.Range(0.9f, 1.5f);
+        //flare.transform.localScale = new Vector3(size, size, size);
+        //Destroy(flare, 0.02f);
     }
 }

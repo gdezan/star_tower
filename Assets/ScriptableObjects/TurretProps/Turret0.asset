@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c267c663efcb9214fa54f7c102492275, type: 3}
+  m_Name: Turret0
+  m_EditorClassIdentifier: 
+  id: 0
+  sprite: {fileID: 21300000, guid: 2ca810a4512386d449e3159baaf7f25b, type: 3}
+  cost: 40
+  timeToBuild: 2
+  range: 40
+  turnSpeed: 25
+  turretPrefab: {fileID: 2373891917420699067, guid: 27f3c376ca0c4a54bb98530437a54393,
+    type: 3}
+  fireRate: 4
+  flare: {fileID: 0}
+  bullet: {fileID: 8396165945736059363, guid: 17891b9e46198c64f9469f166c1565da, type: 3}
+  useLaser: 0
+  damage: 0

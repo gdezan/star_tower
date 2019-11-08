@@ -17,7 +17,7 @@ public class Flare : MonoBehaviour {
         transform.parent = null;
         transform.position = gun.transform.position;
         transform.rotation = gun.transform.rotation;
-
+        
         anim.Play();
 
         Invoke("StopFlare", 2f);
