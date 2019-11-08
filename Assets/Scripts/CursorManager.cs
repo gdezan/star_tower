@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,7 +30,8 @@ public class CursorManager : MonoBehaviour {
         }
 
         Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        tile = LevelManager.instance.GetCurrentTile(mousePosition);
+        if (LevelManager.instance)
+            tile = LevelManager.instance.GetCurrentTile(mousePosition);
         int tileIndex = LevelManager.instance.indexMatrix[tile[1], tile[0]];
 
 
