@@ -6883,7 +6883,7 @@ MonoBehaviour:
     count: 15
     rate: 1.9
     timeTillNextWave: 20
-  - enemy: {fileID: 8527928317739992579, guid: 42d95ee4252ec654cacd19530fb857e1, type: 3}
+  - enemy: {fileID: 8527928317739992579, guid: defad48c66d577744abbd9e6a6fc2db0, type: 3}
     count: 2
     rate: 0.3
     timeTillNextWave: 0
@@ -6895,7 +6895,7 @@ MonoBehaviour:
     count: 20
     rate: 1.8
     timeTillNextWave: 20
-  - enemy: {fileID: 8527928317739992579, guid: 42d95ee4252ec654cacd19530fb857e1, type: 3}
+  - enemy: {fileID: 8527928317739992579, guid: defad48c66d577744abbd9e6a6fc2db0, type: 3}
     count: 8
     rate: 0.3
     timeTillNextWave: 0
